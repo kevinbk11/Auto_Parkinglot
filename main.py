@@ -7,12 +7,21 @@ import CutAndNet
 import os
 DataRoot=r"Produce\DataBase.pt"
 MONITOR_PIN = 4
-MONITOR_PIN1 = 5
+MONITOR_PIN1 = 2
+frontDoorPin=17
+backDoorPin=22
 btm = 7
 cap=cv.VideoCapture(0)
 GPIO.setmode(GPIO.BCM)
 delay=0
-
+def backopenAndClose():
+    GPIO.output(17,1)
+    time.sleep(10)
+    GPIO.output(17,0)
+def frontopenAndClose():
+    GPIO.output(22,1)
+    time.sleep(10)
+    GPIO.output(22,0)    
 def BackDoor():
     while True:
         GPIO.setup(MONITOR_PIN1, GPIO.OUT)
@@ -24,10 +33,22 @@ def BackDoor():
         while (GPIO.input(MONITOR_PIN1) == GPIO.LOW):
             count += 1
         if count>=600:
-            BackDoorMotor.open()
-            time.sleep(10)
-            BackDoorMotor.close()
+            backopenAndClose() 
+'''
 
+todo
+
+在最一開始的時候讓他正轉一度在負轉一度 此時狀態在第一種 所以這時候內部變數要設定為1 也就是第二種
+
+內部變數是用來判斷該走哪一步的
+
+所以假設現在為0 代表要走第一種狀態 所以現在是在第四種狀態 要反轉就要走第三種狀態 也就是0-2+4
+
+假設現在為a 要反轉之前就要先把a-2在+4(避免為負數) 迴圈內部要-1 
+
+迴圈執行到一半的時候且還沒運轉時 如果內部變數等於-1 那就要把它+4
+
+'''
 def FrontDoor():
     while True:
         GPIO.setup(MONITOR_PIN, GPIO.OUT)
@@ -39,11 +60,15 @@ def FrontDoor():
         while (GPIO.input(MONITOR_PIN1) == GPIO.LOW):
             count += 1
         if count>=600:
-            while delay==999999:
+            if delay==999999:
                 print("有人正在取車,請稍後")
-                time.sleep(1)
+                while delay==999999:
+                    print(".")
+                    time.sleep(1)
             delay=99999
-            img=cap.read()
+            time.sleep(5)
+            print("請停止移動 稍後進行拍照  及辨識")
+            ret,img=cap.read()
             Find,img=find.lpr(img)
             if Find:
                 fp=open(DataRoot,"r")
@@ -52,10 +77,7 @@ def FrontDoor():
                 ans=CutAndNet.read(img)
                 for w in range(8):
                     if x[w]=="None":
-                        if w==0:
-                            delay(10)
-                        else:
-                            m.run(45*w)
+                        #馬達要轉轉
                         x[w]=ans
                 ff=open(DataRoot,"w")
                 ff.write()
@@ -63,11 +85,9 @@ def FrontDoor():
                 fff=open(DataRoot,"a")
                 for a in x:
                     ff.write(a+" ")
-                FrontDoorMotor.open()
-                time.sleep(10)
-                FrontDoorMotor.close()
+                frontopenAndClose()
                 delay=0
-        sleep(delay)
+        time.sleep(delay)
     
 fp=open(DataRoot,"r")
 carlist=["n" for x in range(8)]
@@ -85,9 +105,11 @@ GPIO.setup(btm,GPIO.IN)
 while True:
     time.sleep(delay)
     if GPIO.input(btm)==GPIO.HIGH:
-        while delay==99999:
+        if delay==99999:
             print("有人正在停車,請稍後")
-            time.sleep(1)
+            while delay==99999:
+                print(".")
+                time.sleep(1)
         delay=999999
         x = input()
         w=open(DataRoot,"r")
@@ -95,6 +117,7 @@ while True:
         for f in range(8):
             if n[f]==x:
                 n[f]="None"
+                #馬達要轉轉
         w.close()
         ww=open(DataRoot,"w")
         ww.write("")
@@ -103,9 +126,6 @@ while True:
         for h in n:
             www.write(h+" ")
         delay=0
-
-
-
 
 
 
