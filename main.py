@@ -66,8 +66,8 @@ def FrontDoor():
                     print(".")
                     time.sleep(1)
             delay=99999
-            time.sleep(5)
             print("請停止移動 稍後進行拍照  及辨識")
+            time.sleep(5)
             ret,img=cap.read()
             Find,img=find.lpr(img)
             if Find:
