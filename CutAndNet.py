@@ -61,8 +61,7 @@ def read(inimg,cnn):
     img_thre = img_gray
     cv2.threshold(img_gray, 140, 255, cv2.THRESH_BINARY, img_thre)
 
-    cv2.imshow("w",img_thre)
-    cv2.waitKey()
+
     # 3、保存黑白图片
 
     
@@ -167,9 +166,6 @@ def read(inimg,cnn):
                 cj=np.pad(cj,((0,0),(resize,resize)),'constant',constant_values = (255,255))
                 cj=cv2.resize(cj,(44,44))
                 cj=np.pad(cj,((6,6),(6,6)),'constant',constant_values = (255,255))
-                cv2.imshow("cj",cj)
-                cv2.waitKey()
-                cv2.destroyAllWindows()
                 cj=torch.from_numpy(cj)
                 cj= (cj.view(1,1,56,56)/255.)
 
