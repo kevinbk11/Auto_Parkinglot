@@ -5,35 +5,45 @@ import cv2 as cv
 import find
 import CutAndNet
 import os
-DataRoot=r"Produce\DataBase.pt"
-MONITOR_PIN = 4
-MONITOR_PIN1 = 2
+
+def write(angle=0):
+    duty_cycle = (0.05 * 50) + (0.19 * 50 * angle / 180)
+    return duty_cycle
+
+DataRoot=r"/home/pi/Desktop/work2/car-work/DataBase.pt"
+MONITOR_PIN = 2
+MONITOR_PIN1 = 5
 frontDoorPin=17
 backDoorPin=22
 btm = 7
 cap=cv.VideoCapture(0)
 GPIO.setmode(GPIO.BCM)
+GPIO.setup(17,GPIO.OUT)
+GPIO.setup(22,GPIO.OUT)
+fMotor=GPIO.PWM(17,50)
+bMotor=GPIO.PWM(22,50)
+fMotor.start(0)
+bMotor.start(0)
+time.sleep(2)
+global delay
 delay=0
-def backopenAndClose():
-    GPIO.output(17,1)
-    time.sleep(10)
-    GPIO.output(17,0)
-def frontopenAndClose():
-    GPIO.output(22,1)
-    time.sleep(10)
-    GPIO.output(22,0)    
+  
 def BackDoor():
     while True:
         GPIO.setup(MONITOR_PIN1, GPIO.OUT)
         GPIO.output(MONITOR_PIN1, GPIO.LOW)
         time.sleep(0.1)
- 
+
         count = 0
         GPIO.setup(MONITOR_PIN1, GPIO.IN)
         while (GPIO.input(MONITOR_PIN1) == GPIO.LOW):
             count += 1
-        if count>=600:
-            backopenAndClose() 
+            if count>=50000:break
+        print(count)
+        if count>=50000:
+            bMotor.ChangeDutyCycle(write(90))
+            time.sleep(5)
+            bMotor.ChangeDutyCycle(write(0))
 '''
 
 todo
@@ -49,18 +59,23 @@ todo
 迴圈執行到一半的時候且還沒運轉時 如果內部變數等於-1 那就要把它+4
 
 '''
+#cnn=CutAndNet.CNN()
+#cnn.load_state_dict()
 def FrontDoor():
+    global delay
     while True:
         GPIO.setup(MONITOR_PIN, GPIO.OUT)
         GPIO.output(MONITOR_PIN, GPIO.LOW)
         time.sleep(0.1)
 
         count = 0
-        GPIO.setup(MONITOR_PIN1, GPIO.IN)
-        while (GPIO.input(MONITOR_PIN1) == GPIO.LOW):
+        GPIO.setup(MONITOR_PIN, GPIO.IN)
+        while (GPIO.input(MONITOR_PIN) == GPIO.LOW):
+            
             count += 1
-        if count>=600:
-            if delay==999999:
+        #print(count,"A")
+        if count>1800:
+            '''if delay==999999:
                 print("有人正在取車,請稍後")
                 while delay==999999:
                     print(".")
@@ -74,7 +89,7 @@ def FrontDoor():
                 fp=open(DataRoot,"r")
                 x=fp.readline().split()
                 fp.close()
-                ans=CutAndNet.read(img)
+                ans=CutAndNet.read(img,cnn)
                 for w in range(8):
                     if x[w]=="None":
                         #馬達要轉轉
@@ -85,8 +100,12 @@ def FrontDoor():
                 fff=open(DataRoot,"a")
                 for a in x:
                     ff.write(a+" ")
-                frontopenAndClose()
-                delay=0
+                delay=0'''
+            fMotor.ChangeDutyCycle(write(90))
+            time.sleep(5)
+            fMotor.ChangeDutyCycle(write(0))
+            
+            
         time.sleep(delay)
     
 fp=open(DataRoot,"r")

@@ -5,7 +5,6 @@ import torch.utils.data as Data
 import torchvision
 from torchvision import transforms
 import numpy as np
-import matplotlib.pyplot as plt
 import random as rand
 CharDict={1:"1",2:"2",3:"3",4:"4",5:"5",6:"6",7:"7",8:"8",9:"9",10:"0",11:"A",
           12:"B",13:"C",14:"D",15:"E",16:"F",17:"G",18:"H",19:"1",20:"J",21:"K",
