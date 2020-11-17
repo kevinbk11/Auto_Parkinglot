@@ -5,7 +5,10 @@ import cv2 as cv
 import find
 import CutAndNet
 import os
-
+import stepmotorClass
+import torch
+GPIO.setwarnings(0)
+m=stepmotorClass.m
 def write(angle=0):
     duty_cycle = (0.05 * 50) + (0.19 * 50 * angle / 180)
     return duty_cycle
@@ -15,8 +18,7 @@ MONITOR_PIN = 2
 MONITOR_PIN1 = 5
 frontDoorPin=17
 backDoorPin=22
-btm = 7
-cap=cv.VideoCapture(0)
+btm = 15
 GPIO.setmode(GPIO.BCM)
 GPIO.setup(17,GPIO.OUT)
 GPIO.setup(22,GPIO.OUT)
@@ -38,9 +40,8 @@ def BackDoor():
         GPIO.setup(MONITOR_PIN1, GPIO.IN)
         while (GPIO.input(MONITOR_PIN1) == GPIO.LOW):
             count += 1
-            if count>=50000:break
-        print(count)
-        if count>=50000:
+        #print(count) #right
+        if count>=9500:
             bMotor.ChangeDutyCycle(write(90))
             time.sleep(5)
             bMotor.ChangeDutyCycle(write(0))
@@ -56,11 +57,10 @@ todo
 
 假設現在為a 要反轉之前就要先把a-2在+4(避免為負數) 迴圈內部要-1 
 
-迴圈執行到一半的時候且還沒運轉時 如果內部變數等於-1 那就要把它+4
+迴圈執行到一半的時候且還沒運轉時 如果內部變數等於-1 那就要把它+4'''
 
-'''
-#cnn=CutAndNet.CNN()
-#cnn.load_state_dict()
+cnn=CutAndNet.CNN()
+cnn.load_state_dict(torch.load("car-work/reallynet.pt"))
 def FrontDoor():
     global delay
     while True:
@@ -73,18 +73,18 @@ def FrontDoor():
         while (GPIO.input(MONITOR_PIN) == GPIO.LOW):
             
             count += 1
-        #print(count,"A")
-        if count>1800:
-            '''if delay==999999:
-                print("有人正在取車,請稍後")
-                while delay==999999:
-                    print(".")
-                    time.sleep(1)
+        print(count,"A") #left
+        if count>8000:
+            while delay==999999:
+                time.sleep(1)
             delay=99999
-            print("請停止移動 稍後進行拍照  及辨識")
-            time.sleep(5)
+            print("請停止移動 稍後進行拍照及辨識")
+            time.sleep(2)
+            cap=cv.VideoCapture(0)
             ret,img=cap.read()
+            cap.release()
             Find,img=find.lpr(img)
+            
             if Find:
                 fp=open(DataRoot,"r")
                 x=fp.readline().split()
@@ -92,21 +92,24 @@ def FrontDoor():
                 ans=CutAndNet.read(img,cnn)
                 for w in range(8):
                     if x[w]=="None":
-                        #馬達要轉轉
+                        m.run(w*45,0.01)
                         x[w]=ans
+                        break
                 ff=open(DataRoot,"w")
-                ff.write()
+                ff.write("")
                 ff.close()
                 fff=open(DataRoot,"a")
                 for a in x:
-                    ff.write(a+" ")
-                delay=0'''
-            fMotor.ChangeDutyCycle(write(90))
-            time.sleep(5)
-            fMotor.ChangeDutyCycle(write(0))
-            
-            
-        time.sleep(delay)
+                    fff.write(a+" ")
+                fff.close()
+                cv.destroyAllWindows()
+                delay=0
+                fMotor.ChangeDutyCycle(write(90))
+                time.sleep(5)
+                fMotor.ChangeDutyCycle(write(0))
+            delay=0
+        
+        
     
 fp=open(DataRoot,"r")
 carlist=["n" for x in range(8)]
@@ -122,31 +125,30 @@ Front.start()
 Back.start()
 GPIO.setup(btm,GPIO.IN)
 while True:
-    time.sleep(delay)
-    if GPIO.input(btm)==GPIO.HIGH:
-        if delay==99999:
-            print("有人正在停車,請稍後")
-            while delay==99999:
-                print(".")
-                time.sleep(1)
+    time.sleep(0.1)
+    btmpress=GPIO.input(btm)
+    if btmpress==GPIO.LOW:
+        while delay==99999:
+            time.sleep(1)
+        print("please input your car number.")
         delay=999999
         x = input()
         w=open(DataRoot,"r")
         n=w.readline().split()
+        w.close()
         for f in range(8):
             if n[f]==x:
                 n[f]="None"
                 #馬達要轉轉
-        w.close()
+                break
         ww=open(DataRoot,"w")
         ww.write("")
         ww.close()
-        www=open(DataRoot,"a")
-        for h in n:
-            www.write(h+" ")
-        delay=0
-
-
+        print(n)
+        fff=open(DataRoot,"a")
+        for a in n:
+            fff.write(a+" ")
+        fff.close()
 
 
 

@@ -84,7 +84,7 @@ def lpr(img):
             dist_r = r
             In=True
     # 畫出識別結果，由於之前多做了一次膨脹操作，導致矩形框稍大了一些，因此這裡對於框架+3-3可以使框架更貼合車牌
-    print(In)
+    
     if(In):
         cutimg=img[dist_r[1]-5:dist_r[3]-5,dist_r[0]+15:dist_r[2]+5]
         cutimg=cv2.cvtColor(cutimg,cv2.COLOR_BGR2GRAY)
@@ -93,11 +93,11 @@ def lpr(img):
         cv2.waitKey(0)
         y=len(cutimg)#row
         m=y//2
-        print(y)
+        
         f=False
         R,L,U,D=0,0,0,0
         x=cutimg.size//y#column
-        print(x,y)
+        
         '''for cc in range(0,x):
             for c in range(0,y):
                 if cutimg[c][cc] == 0:
