@@ -7,13 +7,27 @@ import CutAndNet
 import os
 import stepmotorClass
 import torch
+import light
+DataRoot=r"/home/pi/Desktop/work2/car-work/DataBase.pt"
 GPIO.setwarnings(0)
+
 m=stepmotorClass.m
+
+fp=open(DataRoot,"r")
+Seven=light.Segments
+x=fp.readline().split()
+r=0
+for h in x:
+    if h=="None":
+        r+=1
+print(r)
+Seven.ChangeState(r)
+fp.close() 
+
 def write(angle=0):
     duty_cycle = (0.05 * 50) + (0.19 * 50 * angle / 180)
     return duty_cycle
 
-DataRoot=r"/home/pi/Desktop/work2/car-work/DataBase.pt"
 MONITOR_PIN = 2
 MONITOR_PIN1 = 5
 frontDoorPin=17
@@ -73,8 +87,8 @@ def FrontDoor():
         while (GPIO.input(MONITOR_PIN) == GPIO.LOW):
             
             count += 1
-        print(count,"A") #left
-        if count>8000:
+        #print(count,"A") #lefT
+        if count>4000:
             while delay==999999:
                 time.sleep(1)
             delay=99999
@@ -92,9 +106,14 @@ def FrontDoor():
                 ans=CutAndNet.read(img,cnn)
                 for w in range(8):
                     if x[w]=="None":
-                        m.run(w*45,0.01)
+                        fMotor.ChangeDutyCycle(write(90))
+                        time.sleep(5)
+                        fMotor.ChangeDutyCycle(write(0))
+                        time.sleep(3)
+                        m.run(w*45,0.025)
                         x[w]=ans
                         break
+                Seven.ChangeState(x.count("None"))
                 ff=open(DataRoot,"w")
                 ff.write("")
                 ff.close()
@@ -104,21 +123,10 @@ def FrontDoor():
                 fff.close()
                 cv.destroyAllWindows()
                 delay=0
-                fMotor.ChangeDutyCycle(write(90))
-                time.sleep(5)
-                fMotor.ChangeDutyCycle(write(0))
             delay=0
         
         
     
-fp=open(DataRoot,"r")
-carlist=["n" for x in range(8)]
-x=fp.readline().split()
-r=0
-for h in x:
-    carlist[r]=h
-    r+=1
-fp.close() 
 Front=threading.Thread(target=FrontDoor)
 Back=threading.Thread(target=BackDoor)
 Front.start()
@@ -139,7 +147,9 @@ while True:
         for f in range(8):
             if n[f]==x:
                 n[f]="None"
-                #馬達要轉轉
+                m.run(180-45*f,0.025)
+                count=n.count("None")
+                Seven.ChangeState(count)
                 break
         ww=open(DataRoot,"w")
         ww.write("")
@@ -149,7 +159,7 @@ while True:
         for a in n:
             fff.write(a+" ")
         fff.close()
-
+    delay=0
 
 
 
