@@ -159,6 +159,7 @@ while True:
         for a in n:
             fff.write(a+" ")
         fff.close()
+        #start
     delay=0
 
 
