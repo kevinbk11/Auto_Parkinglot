@@ -9,6 +9,7 @@ import stepmotorClass
 import torch
 import light
 DataRoot=r"/home/pi/Desktop/work2/car-work/DataBase.pt"
+CarInputRoot=r"/home/pi/Desktop/work2/car-work/data.txt"
 GPIO.setwarnings(0)
 
 m=stepmotorClass.m
@@ -133,19 +134,17 @@ Front.start()
 Back.start()
 GPIO.setup(btm,GPIO.IN)
 while True:
-    time.sleep(0.1)
-    btmpress=GPIO.input(btm)
-    if btmpress==GPIO.LOW:
-        while delay==99999:
-            time.sleep(1)
-        print("please input your car number.")
+    time.sleep(2)
+    fp=open(CarInputRoot,"r")
+    CarNumber=fp.readline()
+    fp.close()
+    if len(CarNumber)>0:
         delay=999999
-        x = input()
         w=open(DataRoot,"r")
         n=w.readline().split()
         w.close()
         for f in range(8):
-            if n[f]==x:
+            if n[f]==CarNumber:
                 n[f]="None"
                 m.run(180-45*f,0.025)
                 count=n.count("None")
@@ -159,8 +158,7 @@ while True:
         for a in n:
             fff.write(a+" ")
         fff.close()
-        #startTo
-    delay=0
+delay=0
 
 
 
