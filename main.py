@@ -87,7 +87,7 @@ def FrontDoor():
         while (GPIO.input(MONITOR_PIN) == GPIO.LOW):
             
             count += 1
-        print(count,"A") #lefT
+        #print(count,"A") #lefT
         if count>6000:
             while delay==999999:
                 time.sleep(1)
