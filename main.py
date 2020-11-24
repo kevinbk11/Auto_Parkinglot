@@ -7,7 +7,7 @@ import CutAndNet
 import os
 import stepmotorClass
 import torch
-import light
+import SevenSegmentsClass
 DataRoot=r"/home/pi/Desktop/work2/car-work/DataBase.pt"
 CarInputRoot=r"/home/pi/Desktop/work2/car-work/data.txt"
 GPIO.setwarnings(0)
@@ -15,7 +15,7 @@ GPIO.setwarnings(0)
 m=stepmotorClass.m
 
 fp=open(DataRoot,"r")
-Seven=light.Segments
+Seven=SevenSegmentsClass.Segments
 x=fp.readline().split()
 r=0
 for h in x:
@@ -75,7 +75,7 @@ todo
 迴圈執行到一半的時候且還沒運轉時 如果內部變數等於-1 那就要把它+4'''
 
 cnn=CutAndNet.CNN()
-cnn.load_state_dict(torch.load("car-work/reallynet.pt"))
+cnn.load_state_dict(torch.load("/home/pi/Desktop/work2/car-work/reallynet.pt"))
 def FrontDoor():
     global delay
     while True:
@@ -89,7 +89,7 @@ def FrontDoor():
             
             count += 1
         #print(count,"A") #lefT
-        if count>4000:
+        if count>6000:
             while delay==999999:
                 time.sleep(1)
             delay=99999
@@ -153,7 +153,6 @@ while True:
         ww=open(DataRoot,"w")
         ww.write("")
         ww.close()
-        print(n)
         fff=open(DataRoot,"a")
         for a in n:
             fff.write(a+" ")
