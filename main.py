@@ -154,34 +154,29 @@ while True:
                 Seven.ChangeState(count)
                 break
     
-        { 
-           ww=open(DataRoot,"w")
-           ww.write("")
-           ww.close()
-        }
+        ww=open(DataRoot,"w")
+        ww.write("")
+        ww.close()
+
         print(n)
-        {
-            fff=open(DataRoot,"a")
-            for a in n:
-                fff.write(a+" ")
-            fff.close()            
-        }
 
+        fff=open(DataRoot,"a")
+        for a in n:
+            fff.write(a+" ")
+        fff.close()
 
-        {
-            f=open(CarInputRoot,"w")
-            f.write("")
-            f.close()            
-        }
+        f=open(CarInputRoot,"w")
+        f.write("")
+        f.close()
+        
+        oldCarList=CarList.copy()
+        CarList.clear()
+        f=open(CarInputRoot,"a")
+        for x in range(1,len(oldCarList)):
+            f.write(oldCarList[x]+" ")
+            CarList.append(oldCarList[x])
+        f.close()
 
-        {
-            CarList.clear()
-            f=open(CarInputRoot,"a")
-            for x in range(1,len(CarList)):
-                f.write(x+" ")
-                CarList.append(x)
-            f.close()
-        }
 
     delay=0
 
