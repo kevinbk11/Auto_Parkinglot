@@ -146,7 +146,6 @@ while True:
         n=w.readline().split()
         w.close()
 
-
         for f in range(8):
             if n[f]==CarList[0]:
                 n[f]="None"
@@ -154,27 +153,37 @@ while True:
                 count=n.count("None")
                 Seven.ChangeState(count)
                 break
-        ww=open(DataRoot,"w")
-        ww.write("")
-        ww.close()
+    
+        { 
+           ww=open(DataRoot,"w")
+           ww.write("")
+           ww.close()
+        }
         print(n)
-        fff=open(DataRoot,"a")
-        for a in n:
-            fff.write(a+" ")
-        fff.close()
-
-        f=open(CarInputRoot,"w")
-        f.write("")
-        f.close()
-        CarList.clear()
-        f=open(CarInputRoot,"a")
-        for x in range(1,len(CarList)):
-            f.write(x+" ")
-            CarList.append(x)
-        f.close()
+        {
+            fff=open(DataRoot,"a")
+            for a in n:
+                fff.write(a+" ")
+            fff.close()            
+        }
 
 
-    delay=0
+        {
+            f=open(CarInputRoot,"w")
+            f.write("")
+            f.close()            
+        }
+
+        {
+            CarList.clear()
+            f=open(CarInputRoot,"a")
+            for x in range(1,len(CarList)):
+                f.write(x+" ")
+                CarList.append(x)
+            f.close()
+        }
+
+        delay=0
 
 
 
