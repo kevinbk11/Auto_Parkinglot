@@ -136,15 +136,19 @@ GPIO.setup(btm,GPIO.IN)
 while True:
     time.sleep(2)
     fp=open(CarInputRoot,"r")
-    CarNumber=fp.readline()
+    CarList=fp.readline().split()
     fp.close()
-    if len(CarNumber)>0:
+    while len(CarList)>0:
+        
         delay=999999
+        
         w=open(DataRoot,"r")
         n=w.readline().split()
         w.close()
+
+
         for f in range(8):
-            if n[f]==CarNumber:
+            if n[f]==CarList[0]:
                 n[f]="None"
                 m.run(180-45*f,0.025)
                 count=n.count("None")
@@ -158,7 +162,19 @@ while True:
         for a in n:
             fff.write(a+" ")
         fff.close()
-delay=0
+
+        f=open(CarInputRoot,"w")
+        f.write("")
+        f.close()
+        CarList.clear()
+        f=open(CarInputRoot,"a")
+        for x in range(1,len(CarList)):
+            f.write(x+" ")
+            CarList.append(x)
+        f.close()
+
+
+    delay=0
 
 
 
