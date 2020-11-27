@@ -55,8 +55,8 @@ def BackDoor():
         GPIO.setup(MONITOR_PIN1, GPIO.IN)
         while (GPIO.input(MONITOR_PIN1) == GPIO.LOW):
             count += 1
-        #print(count) #right
-        if count>=9500:
+        #print(count,"a") #right
+        if count>=5000:
             bMotor.ChangeDutyCycle(write(90))
             time.sleep(5)
             bMotor.ChangeDutyCycle(write(0))
@@ -88,8 +88,8 @@ def FrontDoor():
         while (GPIO.input(MONITOR_PIN) == GPIO.LOW):
             
             count += 1
-        print(count,"A") #lefT
-        if count>6000:
+        #print(count,"A") #lefT
+        if count>8000:
             while delay==999999:
                 time.sleep(1)
             delay=99999
@@ -105,13 +105,15 @@ def FrontDoor():
                 x=fp.readline().split()
                 fp.close()
                 ans=CutAndNet.read(img,cnn)
+
                 for w in range(8):
+                    if ans=="N":break
                     if x[w]=="None":
                         fMotor.ChangeDutyCycle(write(90))
                         time.sleep(5)
                         fMotor.ChangeDutyCycle(write(0))
-                        time.sleep(3)
-                        m.run(w*45,0.025)
+                        time.sleep(2)
+                        m.run(w*45,0.025,False)
                         x[w]=ans
                         break
                 Seven.ChangeState(x.count("None"))
@@ -138,7 +140,14 @@ while True:
     fp=open(CarInputRoot,"r")
     CarNumber=fp.readline()
     fp.close()
-    if len(CarNumber)>0:
+
+    fp=open(CarInputRoot,"w")
+    fp.write("")
+    fp.close()
+
+    if len(CarNumber)>1:
+        while delay==99999:
+            time.sleep(1)
         delay=999999
         w=open(DataRoot,"r")
         n=w.readline().split()
@@ -146,7 +155,8 @@ while True:
         for f in range(8):
             if n[f]==CarNumber:
                 n[f]="None"
-                m.run(180-45*f,0.025)
+                theta=(180+45*f)%360
+                m.run(theta,0.025,False)
                 count=n.count("None")
                 Seven.ChangeState(count)
                 break
@@ -157,7 +167,7 @@ while True:
         for a in n:
             fff.write(a+" ")
         fff.close()
-delay=0
+        delay=0
 
 
 
