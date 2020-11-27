@@ -11,6 +11,7 @@ import SevenSegmentsClass
 DataRoot=r"/home/pi/Desktop/work2/car-work/DataBase.pt"
 CarInputRoot=r"/home/pi/Desktop/work2/car-work/data.txt"
 
+
 GPIO.setwarnings(0)
 
 m=stepmotorClass.m
@@ -61,7 +62,6 @@ def BackDoor():
             bMotor.ChangeDutyCycle(write(90))
             time.sleep(5)
             bMotor.ChangeDutyCycle(write(0))
-
 
 cnn=CutAndNet.CNN()
 cnn.load_state_dict(torch.load("car-work/reallynet.pt"))
@@ -136,6 +136,7 @@ Check.start()
 while True:
     time.sleep(2)
     while len(CarList)>0:
+      
         delay=999999
         
         w=open(DataRoot,"r")
