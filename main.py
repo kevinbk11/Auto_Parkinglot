@@ -156,7 +156,7 @@ while True:
     
         ww=open(DataRoot,"w")
         ww.write("")
-        ww.close()
+        ww.close()##
 
         print(n)
 
