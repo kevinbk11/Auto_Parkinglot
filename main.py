@@ -127,7 +127,9 @@ def CheckQueue():
     while True:
         time.sleep(0.1)
         fp=open(CarInputRoot,"r")
-        CarList=fp.readline().split()
+        x=fp.readline().split()
+        if len(x)>0:
+            CarList=x
         fp.close()
 Check=threading.Thread(target=CheckQueue)
 Check.start()
