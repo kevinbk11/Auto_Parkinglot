@@ -62,7 +62,6 @@ def BackDoor():
             time.sleep(5)
             bMotor.ChangeDutyCycle(write(0))
 
-
 cnn=CutAndNet.CNN()
 cnn.load_state_dict(torch.load("car-work/reallynet.pt"))
 def FrontDoor():
@@ -74,7 +73,7 @@ def FrontDoor():
 
         count = 0
         GPIO.setup(MONITOR_PIN, GPIO.IN)
-        while (GPIO.input(MONITOR_PIN) == GPIO.LOW):
+        awdawdwhile (GPIO.input(MONITOR_PIN) == GPIO.LOW):
             
             count += 1
         #print(count,"A") #lefT
