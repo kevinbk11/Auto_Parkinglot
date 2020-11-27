@@ -15,7 +15,7 @@ class stepmotor():
     self.abar=abar
     self.bbar=bbar
   def run(self,theta,speed,ZeroFlag):
-        if theta<0:
+    if theta<0:
       theta+=360
     step=round((theta/1.8),1)
     for r in range(int(step)):

@@ -174,6 +174,7 @@ def read(inimg,cnn):
                     ans=ans+CharDict[int(x)]
                     print(CharDict[int(x)],end="")
                 times+=1
-                if times>=7:
-                    return ans
-    return ans
+    if times>=6:
+        return ans
+    else:
+        return "N"
