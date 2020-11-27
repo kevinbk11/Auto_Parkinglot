@@ -9,7 +9,8 @@ import stepmotorClass
 import torch
 import SevenSegmentsClass
 DataRoot=r"/home/pi/Desktop/work2/car-work/DataBase.pt"
-CarInputRoot=r"C:\Users\User\Desktop\c++\Produce\data.txt"
+CarInputRoot=r"/home/pi/Desktop/work2/car-work/data.txt"
+
 
 GPIO.setwarnings(0)
 
@@ -73,7 +74,7 @@ def FrontDoor():
 
         count = 0
         GPIO.setup(MONITOR_PIN, GPIO.IN)
-        awdawdwhile (GPIO.input(MONITOR_PIN) == GPIO.LOW):
+        while (GPIO.input(MONITOR_PIN) == GPIO.LOW):
             
             count += 1
         #print(count,"A") #lefT
@@ -126,15 +127,16 @@ def CheckQueue():
     while True:
         time.sleep(0.1)
         fp=open(CarInputRoot,"r")
-        CarList=fp.readline().split()
+        x=fp.readline().split()
+        if len(x)>0:
+            CarList=x
         fp.close()
 Check=threading.Thread(target=CheckQueue)
 Check.start()
 while True:
     time.sleep(2)
     while len(CarList)>0:
-        time.sleep(3)
-        print(CarList)
+      
         delay=999999
         
         w=open(DataRoot,"r")
