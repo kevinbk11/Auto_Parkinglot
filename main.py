@@ -9,7 +9,7 @@ import stepmotorClass
 import torch
 import SevenSegmentsClass
 DataRoot=r"/home/pi/Desktop/work2/car-work/DataBase.pt"
-Root=r"/home/pi/Desktop/work2/car-work/data.txt"
+CarInputRoot=r"/home/pi/Desktop/work2/car-work/data.txt"
 
 GPIO.setwarnings(0)
 
