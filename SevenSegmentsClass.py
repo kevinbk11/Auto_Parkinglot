@@ -1,4 +1,5 @@
 import RPi.GPIO as GPIO
+import time
 class seg():
     def __init__(self,D,C,B,A):
         self.__Pin=[D,C,B,A]
