@@ -7,7 +7,7 @@ import CutAndNet
 import os
 import stepmotorClass
 import torch
-import light
+import SevenSegmentsClass
 DataRoot=r"/home/pi/Desktop/work2/car-work/DataBase.pt"
 CarInputRoot=r"/home/pi/Desktop/work2/car-work/data.txt"
 GPIO.setwarnings(0)
@@ -15,7 +15,7 @@ GPIO.setwarnings(0)
 m=stepmotorClass.m
 
 fp=open(DataRoot,"r")
-Seven=light.Segments
+Seven=SevenSegmentsClass.Segments
 x=fp.readline().split()
 r=0
 for h in x:
@@ -56,7 +56,7 @@ def BackDoor():
         while (GPIO.input(MONITOR_PIN1) == GPIO.LOW):
             count += 1
         #print(count) #right
-        if count>=9500:
+        if count>=20000:
             bMotor.ChangeDutyCycle(write(90))
             time.sleep(5)
             bMotor.ChangeDutyCycle(write(0))
@@ -75,7 +75,7 @@ todo
 迴圈執行到一半的時候且還沒運轉時 如果內部變數等於-1 那就要把它+4'''
 
 cnn=CutAndNet.CNN()
-cnn.load_state_dict(torch.load("car-work/reallynet.pt"))
+cnn.load_state_dict(torch.load("/home/pi/Desktop/work2/car-work/reallynet.pt"))
 def FrontDoor():
     global delay
     while True:
@@ -89,7 +89,7 @@ def FrontDoor():
             
             count += 1
         #print(count,"A") #lefT
-        if count>4000:
+        if count>6500:
             while delay==999999:
                 time.sleep(1)
             delay=99999
@@ -111,7 +111,7 @@ def FrontDoor():
                         time.sleep(5)
                         fMotor.ChangeDutyCycle(write(0))
                         time.sleep(3)
-                        m.run(w*45,0.025)
+                        m.run(w*45,0.025,False)
                         x[w]=ans
                         break
                 Seven.ChangeState(x.count("None"))
@@ -149,7 +149,7 @@ while True:
         for f in range(8):
             if n[f]==CarList[0]:
                 n[f]="None"
-                m.run(180-45*f,0.025)
+                m.run(180-45*f,0.025,False)
                 count=n.count("None")
                 Seven.ChangeState(count)
                 break
