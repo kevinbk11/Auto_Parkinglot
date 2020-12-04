@@ -112,8 +112,8 @@ def FrontDoor():
                         fMotor.ChangeDutyCycle(write(0))
                         time.sleep(3)
 
-
                         m.run(w*45,0.030,False)
+
 
                         x[w]=ans
                         break
@@ -164,7 +164,9 @@ while True:
         for f in range(8):
             if n[f]==CarList[0]:
                 n[f]="None"
+
                 m.run(180+45*f,0.030,False)
+
                 count=n.count("None")
                 Seven.ChangeState(count)
                 break
