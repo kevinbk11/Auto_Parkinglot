@@ -78,9 +78,7 @@ def FrontDoor():
             
             count += 1
         #print(count,"A") #lefT
-<<<<<<< HEAD
-        if count>6000:
-=======
+
         if count>8000:
             full=False
 
@@ -88,7 +86,7 @@ def FrontDoor():
             x=fp.readline().split()
             fp.close()
             Find=False
->>>>>>> e87812cc883b3349f5a1854d56ad3a0d1e8f2461
+
             while delay==999999:
                 time.sleep(1)
 
