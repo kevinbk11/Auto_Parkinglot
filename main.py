@@ -58,7 +58,7 @@ def BackDoor():
         while (GPIO.input(MONITOR_PIN1) == GPIO.LOW):
             count += 1
         #print(count) #right
-        if count>=20000:
+        if count>=25000:
             bMotor.ChangeDutyCycle(write(90))
             time.sleep(5)
             bMotor.ChangeDutyCycle(write(0))
@@ -107,14 +107,16 @@ def FrontDoor():
 
             if Find and not full:
                 ans=CutAndNet.read(img,cnn)
+                if ans=="N":
+                    break
                 for w in range(8):
                     if x[w]=="None":
                         fMotor.ChangeDutyCycle(write(90))
-                        time.sleep(5)
+                        time5.sleep(5)
                         fMotor.ChangeDutyCycle(write(0))
                         time.sleep(3)
 
-                        m.run(w*45,0.030,False)
+                        m.run(w*45,0.05,False)
 
 
                         x[w]=ans
@@ -167,7 +169,7 @@ while True:
             if n[f]==CarList[0]:
                 n[f]="None"
 
-                m.run(180+45*f,0.030,False)
+                m.run(180+45*f,0.03,False)
 
                 count=n.count("None")
                 Seven.ChangeState(count)
