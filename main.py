@@ -77,8 +77,8 @@ def FrontDoor():
         while (GPIO.input(MONITOR_PIN) == GPIO.LOW):
             
             count += 1
-        #print(count,"A") #lefT
-        if count>6500:
+        print(count,"A") #lefT
+        if count>8000:
             while delay==999999:
                 time.sleep(1)
             delay=99999
@@ -100,11 +100,10 @@ def FrontDoor():
                         time.sleep(5)
                         fMotor.ChangeDutyCycle(write(0))
                         time.sleep(3)
-<<<<<<< HEAD
+
+
                         m.run(w*45,0.025,False)
-=======
-                        m.run(w*45,0.025,True)
->>>>>>> 2bb12b535bb73b0057f98a2a03d056f8cbcb7e9b
+
                         x[w]=ans
                         break
                 Seven.ChangeState(x.count("None"))
@@ -129,18 +128,22 @@ global CarList
 def CheckQueue():
     global CarList
     while True:
-        time.sleep(0.1)
+        time.sleep(0.025)
         fp=open(CarInputRoot,"r")
         x=fp.readline().split()
         if len(x)>0:
             CarList=x
+        else:
+            CarList=[" "]
         fp.close()
 Check=threading.Thread(target=CheckQueue)
 Check.start()
 while True:
     time.sleep(2)
     while len(CarList)>0:
-      
+        if CarList[0]==" ":
+            delay=0
+            break
         delay=999999
         
         w=open(DataRoot,"r")
@@ -150,20 +153,15 @@ while True:
         for f in range(8):
             if n[f]==CarList[0]:
                 n[f]="None"
-<<<<<<< HEAD
-                m.run(180-45*f,0.025,False)
-=======
-                m.run(180-45*f,0.025,True)
->>>>>>> 2bb12b535bb73b0057f98a2a03d056f8cbcb7e9b
+                m.run(180+45*f,0.025,False)
                 count=n.count("None")
                 Seven.ChangeState(count)
                 break
-    
+        time.sleep(4)
         ww=open(DataRoot,"w")
         ww.write("")
         ww.close()
 
-        print(n)
 
         fff=open(DataRoot,"a")
         for a in n:
@@ -183,4 +181,5 @@ while True:
                 f.write(oldCarList[x]+" ")
             CarList.append(oldCarList[x])
         f.close()
+    
     delay=0

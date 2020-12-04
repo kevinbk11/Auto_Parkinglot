@@ -15,17 +15,12 @@ class stepmotor():
     self.abar=abar
     self.bbar=bbar
   def run(self,theta,speed,ZeroFlag):
-<<<<<<< HEAD
-      if theta<0:
-        theta+=360
-      step=round((theta/1.8),1)
-      for r in range(int(step)):
-=======
-    if theta<0:
-      theta+=360
+
+    if theta>=360:
+      theta%=360
     step=round((theta/1.8),1)
     for r in range(int(step)):
->>>>>>> 2bb12b535bb73b0057f98a2a03d056f8cbcb7e9b
+
 
         if self.Now%4==0:
           GPIO.output(self.a,0)
@@ -49,8 +44,8 @@ class stepmotor():
           GPIO.output(self.bbar,0)
         self.Now+=1
         time.sleep(speed)
-      if theta!=0 and ZeroFlag!=True:
-        time.sleep(4)
-        self.run(360-theta,speed,True)
+    if theta!=0 and ZeroFlag!=True:
+      time.sleep(4)
+      self.run(360-theta,speed,True)
 
 m=stepmotor(6,13,19,26)
