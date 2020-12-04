@@ -44,8 +44,7 @@ class stepmotor():
           GPIO.output(self.bbar,0)
         self.Now+=1
         time.sleep(speed)
+    time.sleep(4)
     if theta!=0 and ZeroFlag!=True:
-      time.sleep(4)
       self.run(360-theta,speed,True)
-
 m=stepmotor(6,13,19,26)

@@ -77,22 +77,33 @@ def FrontDoor():
         while (GPIO.input(MONITOR_PIN) == GPIO.LOW):
             
             count += 1
-        print(count,"A") #lefT
+        #print(count,"A") #lefT
         if count>8000:
+            full=False
+
+            fp=open(DataRoot,"r")
+            x=fp.readline().split()
+            fp.close()
+            Find=False
             while delay==999999:
                 time.sleep(1)
+
+            if x.count("None")==0:
+                print("full")
+                full=True
+                
             delay=99999
-            print("請停止移動 稍後進行拍照及辨識")
-            time.sleep(2)
-            cap=cv.VideoCapture(0)
-            ret,img=cap.read()
-            cap.release()
-            Find,img=find.lpr(img)
-            
-            if Find:
-                fp=open(DataRoot,"r")
-                x=fp.readline().split()
-                fp.close()
+            if not full:
+                print("請停止移動 稍後進行拍照及辨識")
+                time.sleep(2)
+                cap=cv.VideoCapture(0)
+                ret,img=cap.read()
+                cap.release()
+                Find,img=find.lpr(img)
+
+        
+
+            if Find and not full:
                 ans=CutAndNet.read(img,cnn)
                 for w in range(8):
                     if x[w]=="None":
@@ -102,7 +113,7 @@ def FrontDoor():
                         time.sleep(3)
 
 
-                        m.run(w*45,0.025,False)
+                        m.run(w*45,0.030,False)
 
                         x[w]=ans
                         break
@@ -153,7 +164,7 @@ while True:
         for f in range(8):
             if n[f]==CarList[0]:
                 n[f]="None"
-                m.run(180+45*f,0.025,False)
+                m.run(180+45*f,0.030,False)
                 count=n.count("None")
                 Seven.ChangeState(count)
                 break
