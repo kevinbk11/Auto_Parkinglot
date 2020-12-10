@@ -45,6 +45,7 @@ def read(inimg,cnn):
     # 1、读取图像，并把图像转换为灰度图像并显示
     print("Wait...")
     img_gray = inimg  # 读取图片
+    img_gray=cv2.cvtColor(inimg,cv2.COLOR_BGR2GRAY)
     #img = cv2.GaussianBlur(img,(5,5),3)
     #img = cv2.pyrMeanShiftFiltering(img, 35, 100);
     #img_gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)   # 转换了灰度化
@@ -133,24 +134,23 @@ def read(inimg,cnn):
                 kernel = cv2.getStructuringElement(cv2.MORPH_RECT,(3, 3))         
                 up,down,right,left=0,0,0,0
                 _,cj=cv2.threshold(cj,128,255,cv2.THRESH_BINARY)
-                for xx in range(0,56):
-                    if 0 in cj[xx]:
-                        up=xx
-                        for yy in range(xx+1,56):
-                            if 0 not in cj[yy]:
-                                down=yy
-                                break
+                for xx in range(56//2,56):
+                    if 0 not in cj[xx]:
+                        down=xx
                         break
-                f=False
-                for aa in range(0,56):
-                    na=cj[:,aa:aa+1]
-                    if 0 in na:
-                        left=aa
-                        for bb in range(aa+1,56):
-                            na=cj[:,bb:bb+1]
-                            if 0 not in na:
-                                right=bb
-                                break
+                for xx in range(56//2,-1,-1):
+                    if 0 not in cj[xx]:
+                        up=xx+1
+                        break
+                for yy in range(56//2,56):
+                    nn=cj[0:-1,yy:yy+1]
+                    if 0 not in nn:
+                        right=yy
+                        break
+                for yy in range(56//2,-1,-1):
+                    nn=cj[0:-1,yy-1:yy]
+                    if 0 not in nn:
+                        left=yy
                         break
                 #print(up,down,left,right)
                 if down==0:down=-1
@@ -174,7 +174,9 @@ def read(inimg,cnn):
                     ans=ans+CharDict[int(x)]
                     print(CharDict[int(x)],end="")
                 times+=1
-    if times>=6:
+                if times==7:
+                    return ans
+    if times==6:
         return ans
     else:
         return "N"
