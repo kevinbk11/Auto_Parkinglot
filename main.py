@@ -77,9 +77,9 @@ def FrontDoor():
         while (GPIO.input(MONITOR_PIN) == GPIO.LOW):
             
             count += 1
-        #print(count,"A") #lefT
+        print(count,"A") #lefT
 
-        if count>8000:
+        if count>5000:
             full=False
 
             fp=open(DataRoot,"r")
@@ -112,7 +112,7 @@ def FrontDoor():
                 for w in range(8):
                     if x[w]=="None":
                         fMotor.ChangeDutyCycle(write(90))
-                        time5.sleep(5)
+                        time.sleep(5)
                         fMotor.ChangeDutyCycle(write(0))
                         time.sleep(3)
 
@@ -174,7 +174,6 @@ while True:
                 count=n.count("None")
                 Seven.ChangeState(count)
                 break
-        time.sleep(4)
         ww=open(DataRoot,"w")
         ww.write("")
         ww.close()

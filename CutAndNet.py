@@ -45,7 +45,7 @@ def read(inimg,cnn):
     # 1、读取图像，并把图像转换为灰度图像并显示
     print("Wait...")
     img_gray = inimg  # 读取图片
-    img_gray=cv2.cvtColor(inimg,cv2.COLOR_BGR2GRAY)
+
     #img = cv2.GaussianBlur(img,(5,5),3)
     #img = cv2.pyrMeanShiftFiltering(img, 35, 100);
     #img_gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)   # 转换了灰度化
