@@ -58,13 +58,13 @@ def BackDoor():
         while (GPIO.input(MONITOR_PIN1) == GPIO.LOW):
             count += 1
         #print(count) #right
-        if count>=9500:
+        if count>=25000:
             bMotor.ChangeDutyCycle(write(90))
             time.sleep(5)
             bMotor.ChangeDutyCycle(write(0))
 
 cnn=CutAndNet.CNN()
-cnn.load_state_dict(torch.load("car-work/reallynet.pt"))
+cnn.load_state_dict(torch.load("/home/pi/Desktop/work2/car-work/reallynet.pt"))
 def FrontDoor():
     global delay
     while True:
@@ -78,29 +78,47 @@ def FrontDoor():
             
             count += 1
         #print(count,"A") #lefT
-        if count>4000:
+
+        if count>8000:
+            full=False
+
+            fp=open(DataRoot,"r")
+            x=fp.readline().split()
+            fp.close()
+            Find=False
+
             while delay==999999:
                 time.sleep(1)
+
+            if x.count("None")==0:
+                print("full")
+                full=True
+                
             delay=99999
-            print("請停止移動 稍後進行拍照及辨識")
-            time.sleep(2)
-            cap=cv.VideoCapture(0)
-            ret,img=cap.read()
-            cap.release()
-            Find,img=find.lpr(img)
-            
-            if Find:
-                fp=open(DataRoot,"r")
-                x=fp.readline().split()
-                fp.close()
+            if not full:
+                print("請停止移動 稍後進行拍照及辨識")
+                time.sleep(2)
+                cap=cv.VideoCapture(0)
+                ret,img=cap.read()
+                cap.release()
+                Find,img=find.lpr(img)
+
+        
+
+            if Find and not full:
                 ans=CutAndNet.read(img,cnn)
+                if ans=="N":
+                    break
                 for w in range(8):
                     if x[w]=="None":
                         fMotor.ChangeDutyCycle(write(90))
-                        time.sleep(5)
+                        time5.sleep(5)
                         fMotor.ChangeDutyCycle(write(0))
                         time.sleep(3)
-                        m.run(w*45,0.025,True)
+
+                        m.run(w*45,0.05,False)
+
+
                         x[w]=ans
                         break
                 Seven.ChangeState(x.count("None"))
@@ -125,18 +143,22 @@ global CarList
 def CheckQueue():
     global CarList
     while True:
-        time.sleep(0.1)
+        time.sleep(0.025)
         fp=open(CarInputRoot,"r")
         x=fp.readline().split()
         if len(x)>0:
             CarList=x
+        else:
+            CarList=[" "]
         fp.close()
 Check=threading.Thread(target=CheckQueue)
 Check.start()
 while True:
     time.sleep(2)
     while len(CarList)>0:
-      
+        if CarList[0]==" ":
+            delay=0
+            break
         delay=999999
         
         w=open(DataRoot,"r")
@@ -146,16 +168,17 @@ while True:
         for f in range(8):
             if n[f]==CarList[0]:
                 n[f]="None"
-                m.run(180-45*f,0.025,True)
+
+                m.run(180+45*f,0.03,False)
+
                 count=n.count("None")
                 Seven.ChangeState(count)
                 break
-    
+        time.sleep(4)
         ww=open(DataRoot,"w")
         ww.write("")
         ww.close()
 
-        print(n)
 
         fff=open(DataRoot,"a")
         for a in n:
@@ -175,4 +198,5 @@ while True:
                 f.write(oldCarList[x]+" ")
             CarList.append(oldCarList[x])
         f.close()
+    
     delay=0
