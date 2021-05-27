@@ -59,19 +59,19 @@ class CNN(nn.Module):
         def __init__(self):
             super(CNN,self).__init__()
             self.conv1 = nn.Sequential(
-                nn.Conv2d( # 1 56 56
+                nn.Conv2d( 
                     in_channels=1,
                     out_channels=32,
                     kernel_size=5,
                     stride=1,
                     padding=2,
                 ),
-                nn.MaxPool2d(2,2), #32 14 14
+                nn.MaxPool2d(2,2), 
                 nn.ReLU(inplace=True)
             )
             self.conv2=nn.Sequential(               
                 nn.Conv2d(32,64,5,1,2),
-                nn.MaxPool2d(2,2), #64 7 7
+                nn.MaxPool2d(2,2), 
                 nn.BatchNorm2d(64), 
                 nn.ReLU(inplace=True),
             )
@@ -91,14 +91,6 @@ def save():
     CNN1=models.AlexNet()
     k=0
     h = list(cnn.parameters())
-    for i in h:
-        l = 1
-        print("该层的结构：" + str(list(i.size())))
-        for j in i.size():
-            l *= j
-        print("该层参数和：" + str(l))
-        k = k + l
-    print("总参数数量和：" + str(k))
     bk=False
     acc=0
     count=0
@@ -126,10 +118,10 @@ def save():
             loss.backward()#反向求函數偏導數
             optimizer.step()#更新權重
             Recognition_result=torch.max(output,1)[1]#取得當前判斷結果
-         #   ans=str(int(b_x['label']))#取得答案
-        #    count+=1
-        #    if Recognition_result==ans:
-        #        right+=1
+            #ans=str(int(b_x['label']))#取得答案
+            #count+=1
+            #if Recognition_result==ans:
+            #    right+=1
             #print("訓練第 "+str(count)+" 次的結果="+str(Recognition_result),"正確答案="+ans,"ACC=%.3f"%(right/count))
             print(Recognition_result,b_x['label'])
             print(loss.data.numpy())
